@@ -17,12 +17,14 @@ namespace WebbrowserPrototype
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var content = Server.UrlDecode(Request.Form["RenderedContent"]);
+
             var dimensions = new FormDimensions(768, 1056, 768, 984);
 
-            GrabMarkup(dimensions);
+            GeneratePdf(content, dimensions);
         }
 
-        private void GrabMarkup(FormDimensions dimensions)
+        private void GeneratePdf(string content, FormDimensions dimensions)
         {
             var thread = new Thread(delegate ()
             {
@@ -30,7 +32,12 @@ namespace WebbrowserPrototype
                 {
                     browser.ScrollBarsEnabled = false;
                     browser.AllowNavigation = false;
-                    browser.Navigate("http://127.0.0.1/test.asp");
+                    browser.ScriptErrorsSuppressed = true;
+
+                    browser.Navigate("about:blank");
+
+                    browser.DocumentText = content;
+
                     browser.Width = dimensions.BrowserWidth;
                     browser.Height = dimensions.BrowserHeight;
                     browser.DocumentCompleted += (sender, e) => DocCompleted(sender, e, dimensions);
