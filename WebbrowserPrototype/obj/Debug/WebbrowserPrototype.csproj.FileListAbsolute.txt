@@ -1,0 +1,143 @@
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\csc.exe
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CSharp.Core.targets
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.VisualBasic.Core.targets
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\System.Collections.Immutable.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\System.Reflection.Metadata.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\vbc.exe
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\VBCSCompiler.exe
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\VBCSCompiler.exe.config
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.dll.config
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.pdb
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Antlr3.Runtime.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\AspNet.ScriptManager.bootstrap.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\AspNet.ScriptManager.jQuery.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.SqlServer.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.FriendlyUrls.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Core.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Owin.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Web.Optimization.WebForms.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Host.SystemWeb.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Cookies.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Facebook.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Google.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.OAuth.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Twitter.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.ScriptManager.MSAjax.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.ScriptManager.WebForms.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Web.Infrastructure.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Newtonsoft.Json.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Owin.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Optimization.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Providers.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\WebGrease.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Optimization.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Antlr3.Runtime.pdb
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Newtonsoft.Json.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.FriendlyUrls.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.SqlServer.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Core.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Owin.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Providers.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Host.SystemWeb.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Facebook.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Cookies.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Google.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Twitter.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.OAuth.xml
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.dll
+c:\users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.pdb
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\Common.Logging.dll
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\Interop.SHDocVw.dll
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.csproj.ResolveComReference.cache
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\ImageProcessor.dll
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\itextsharp.dll
+C:\Users\bob\documents\visual studio 2015\Projects\WebbrowserPrototype\WebbrowserPrototype\bin\itextsharp.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\csc.exe
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\System.Collections.Immutable.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\System.Reflection.Metadata.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\vbc.exe
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\VBCSCompiler.exe
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\roslyn\VBCSCompiler.exe.config
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.dll.config
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\WebbrowserPrototype.pdb
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Antlr3.Runtime.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\AspNet.ScriptManager.bootstrap.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\AspNet.ScriptManager.jQuery.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Common.Logging.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.SqlServer.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\ImageProcessor.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\itextsharp.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.FriendlyUrls.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Core.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Web.Optimization.WebForms.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Cookies.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Facebook.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Google.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.OAuth.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Twitter.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.ScriptManager.MSAjax.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.ScriptManager.WebForms.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Web.Infrastructure.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Newtonsoft.Json.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Owin.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Optimization.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Providers.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\WebGrease.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\itextsharp.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Optimization.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Antlr3.Runtime.pdb
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Newtonsoft.Json.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.FriendlyUrls.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\EntityFramework.SqlServer.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Core.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\System.Web.Providers.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Facebook.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Cookies.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Google.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.Twitter.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\bin\Microsoft.Owin.Security.OAuth.xml
+C:\src\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.csprojResolveAssemblyReference.cache
+C:\src\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\Interop.SHDocVw.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.csproj.ResolveComReference.cache
+C:\src\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.dll
+C:\src\WebbrowserPrototype\WebbrowserPrototype\obj\Debug\WebbrowserPrototype.pdb
