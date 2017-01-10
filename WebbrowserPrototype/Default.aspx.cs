@@ -9,7 +9,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using ImageProcessor;
 using Image = iTextSharp.text.Image;
-using Rectangle = System.Drawing.Rectangle;
+using Rectangle = iTextSharp.text.Rectangle;
 
 namespace WebbrowserPrototype
 {
@@ -17,10 +17,12 @@ namespace WebbrowserPrototype
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            GrabMarkup();
+            var dimensions = new FormDimensions(768, 1056, 768, 984);
+
+            GrabMarkup(dimensions);
         }
 
-        private void GrabMarkup()
+        private void GrabMarkup(FormDimensions dimensions)
         {
             var thread = new Thread(delegate ()
             {
@@ -29,9 +31,9 @@ namespace WebbrowserPrototype
                     browser.ScrollBarsEnabled = false;
                     browser.AllowNavigation = false;
                     browser.Navigate("http://127.0.0.1/test.asp");
-                    browser.Width = 768;
-                    browser.Height = 1056;
-                    browser.DocumentCompleted += DocCompleted;
+                    browser.Width = dimensions.BrowserWidth;
+                    browser.Height = dimensions.BrowserHeight;
+                    browser.DocumentCompleted += (sender, e) => DocCompleted(sender, e, dimensions);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
                     {
@@ -45,7 +47,7 @@ namespace WebbrowserPrototype
             thread.Join();
         }
 
-        private void DocCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void DocCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, FormDimensions dimensions)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
@@ -53,62 +55,90 @@ namespace WebbrowserPrototype
                 return;
             }
 
-            var scrollHeight = browser.Document.Body.ScrollRectangle.Height;
-            var pageHeight = 984;
+            dimensions.RenderedHeight = GetRenderedHeight(browser);
 
-            browser.Height = scrollHeight;
+            var webPageAsBitmap = GetWebPageAsBitmap(browser, dimensions);
 
-            using (var bitmap = new Bitmap(browser.Width, scrollHeight))
+            var pageCount = PrintablePageCount(dimensions);
+
+            using (var doc = new Document())
             {
-                browser.DrawToBitmap(bitmap, new Rectangle(0, 0, browser.Width, scrollHeight));
-
-                using (var doc = new Document())
+                using (var outputStream = new MemoryStream())
                 {
-                    using (var outputStream = new MemoryStream())
+                    var writer = PdfWriter.GetInstance(doc, outputStream);
+                    writer.CloseStream = false;
+
+                    doc.Open();
+
+                    for (var page = 0; page < pageCount; page++)
                     {
-                        var writer = PdfWriter.GetInstance(doc, outputStream);
-                        writer.CloseStream = false;
+                        var img = SliceImage(webPageAsBitmap, dimensions, page);
 
-                        doc.Open();
-
-                        for (var page = 0; page < scrollHeight / pageHeight + 1; page++)
-                        {
-                            using (var image = new ImageFactory())
-                            {
-                                using (var imageStream = new MemoryStream())
-                                {
-                                    image.Quality(100);
-                                    image.Load(bitmap);
-                                    image.Crop(new Rectangle(0, page * pageHeight, browser.Width, pageHeight));
-
-                                    image.Save(imageStream);
-
-                                    var img = Image.GetInstance(System.Drawing.Image.FromStream(imageStream), ImageFormat.Bmp);
-
-                                    doc.SetPageSize(new iTextSharp.text.Rectangle(816, 1056));
-
-                                    doc.NewPage();
-
-                                    doc.Add(img);
-                                }
-                            }
-                        }
-
-                        doc.Close();
-
-                        Response.Buffer = true;
-                        Response.ClearHeaders();
-                        Response.ClearContent();
-                        Response.ContentType = "application/pdf";
-                        Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
-                        Response.AppendHeader("Content-Transfer-Encoding", "binary");
-                        Response.AppendHeader("Content-Length", outputStream.Length.ToString());
-                        Response.BinaryWrite(outputStream.ToArray());
-                        Response.Flush();
-                        Response.End();
+                        doc.SetPageSize(new Rectangle(dimensions.BrowserWidth, dimensions.BrowserHeight));
+                        doc.NewPage();
+                        doc.Add(img);
                     }
+
+                    doc.Close();
+
+                    SendPdfToClient(outputStream);
                 }
             }
+        }
+
+        private static int PrintablePageCount(FormDimensions dimensions)
+        {
+            return (int)Math.Floor((decimal)dimensions.RenderedHeight / (decimal)dimensions.PageHeight);
+        }
+
+        private Image SliceImage(Bitmap webPageAsBitmap, FormDimensions dimensions, int page)
+        {
+            using (var image = new ImageFactory())
+            {
+                using (var imageStream = new MemoryStream())
+                {
+                    image.Quality(100);
+                    image.Load(webPageAsBitmap);
+                    image.Crop(new System.Drawing.Rectangle(0, page * dimensions.PageHeight, dimensions.BrowserWidth,
+                        dimensions.PageHeight));
+
+                    image.Save(imageStream);
+
+                    return Image.GetInstance(System.Drawing.Image.FromStream(imageStream),
+                        ImageFormat.Bmp);
+                }
+            }
+        }
+
+        private int GetRenderedHeight(WebBrowser browser)
+        {
+            return browser.Document.Body.ScrollRectangle.Height;
+        }
+
+        private Bitmap GetWebPageAsBitmap(WebBrowser browser, FormDimensions dimensions)
+        {
+            browser.Height = dimensions.RenderedHeight;
+
+            var bitmap = new Bitmap(dimensions.BrowserWidth, dimensions.RenderedHeight);
+
+            browser.DrawToBitmap(bitmap,
+                new System.Drawing.Rectangle(0, 0, dimensions.BrowserWidth, dimensions.RenderedHeight));
+
+            return bitmap;
+        }
+
+        private void SendPdfToClient(MemoryStream outputStream)
+        {
+            Response.Buffer = true;
+            Response.ClearHeaders();
+            Response.ClearContent();
+            Response.ContentType = "application/pdf";
+            Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
+            Response.AppendHeader("Content-Transfer-Encoding", "binary");
+            Response.AppendHeader("Content-Length", outputStream.Length.ToString());
+            Response.BinaryWrite(outputStream.ToArray());
+            Response.Flush();
+            Response.End();
         }
     }
 }
