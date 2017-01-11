@@ -18,8 +18,12 @@ namespace WebbrowserPrototype
         protected void Page_Load(object sender, EventArgs e)
         {
             var content = Server.UrlDecode(Request.Form["RenderedContent"]);
+            if (content == null)
+            {
+                return;
+            }
 
-            var dimensions = new FormDimensions(768, 1056, 768, 984);
+            var dimensions = new FormDimensions(816, 1344, 764, 1296);
 
             GeneratePdf(content, dimensions);
         }
@@ -32,11 +36,11 @@ namespace WebbrowserPrototype
                 {
                     browser.ScrollBarsEnabled = false;
                     browser.AllowNavigation = false;
-                    browser.ScriptErrorsSuppressed = true;
-
+                    browser.ScriptErrorsSuppressed = false;
                     browser.Navigate("about:blank");
 
                     browser.DocumentText = content;
+                    //browser.Navigate("http://127.0.0.1/test.asp");
 
                     browser.Width = dimensions.BrowserWidth;
                     browser.Height = dimensions.BrowserHeight;
@@ -126,10 +130,13 @@ namespace WebbrowserPrototype
         {
             browser.Height = dimensions.RenderedHeight;
 
+            browser.Print();
+            
             var bitmap = new Bitmap(dimensions.BrowserWidth, dimensions.RenderedHeight);
 
-            browser.DrawToBitmap(bitmap,
-                new System.Drawing.Rectangle(0, 0, dimensions.BrowserWidth, dimensions.RenderedHeight));
+            browser.DrawToBitmap(bitmap, new System.Drawing.Rectangle(0, 0, dimensions.BrowserWidth, dimensions.RenderedHeight));
+
+            
 
             return bitmap;
         }
