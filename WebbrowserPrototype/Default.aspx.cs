@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.ServiceProcess;
 using System.Threading;
 using System.Web.UI;
 using System.Windows.Forms;
@@ -23,6 +24,7 @@ namespace WebbrowserPrototype
                 return;
             }
 
+
             var dimensions = new FormDimensions(816, 1344, 764, 1296);
 
             GeneratePdf(content, dimensions);
@@ -37,7 +39,7 @@ namespace WebbrowserPrototype
                     browser.ScrollBarsEnabled = false;
                     browser.AllowNavigation = false;
                     browser.ScriptErrorsSuppressed = false;
-                    browser.Navigate("about:blank");
+                    //browser.Navigate("about:blank");
 
                     browser.DocumentText = content;
                     //browser.Navigate("http://127.0.0.1/test.asp");
