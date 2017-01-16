@@ -29,8 +29,8 @@ namespace WebbrowserPrototype
                 return;
             }
 
-            _dimensions.BrowserWidth = int.Parse(Request.Form["BrowserWidth"]);
-            _dimensions.BrowserHeight = int.Parse(Request.Form["BrowserHeight"]);
+            _dimensions.RenderWidth = int.Parse(Request.Form["RenderWidth"]);
+            _dimensions.RenderHeight = int.Parse(Request.Form["RenderHeight"]);
             _dimensions.PageWidth = int.Parse(Request.Form["PageWidth"]);
             _dimensions.PageHeight = int.Parse(Request.Form["PageHeight"]);
             _dimensions.MarginLeft = Convert.ToSingle(Request.Form["MarginLeft"]);
@@ -60,8 +60,8 @@ namespace WebbrowserPrototype
 
                         browser.DocumentText = page;
 
-                        browser.Width = _dimensions.BrowserWidth * _dimensions.Zoom;
-                        browser.Height = _dimensions.BrowserHeight * _dimensions.Zoom;
+                        browser.Width = _dimensions.RenderWidth * _dimensions.Zoom;
+                        browser.Height = _dimensions.RenderHeight * _dimensions.Zoom;
 
                         browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e);
 
@@ -123,14 +123,14 @@ namespace WebbrowserPrototype
 
         private Bitmap GetWebPageAsBitmap(WebBrowser browser)
         {
-            var imageHeight = _dimensions.BrowserHeight * _dimensions.Zoom;
-            var imageWidth = _dimensions.BrowserWidth * _dimensions.Zoom;
+            var imageHeight = _dimensions.RenderHeight * _dimensions.Zoom;
+            var imageWidth = _dimensions.RenderWidth * _dimensions.Zoom;
 
             var bitmap = new Bitmap(imageWidth, imageHeight);
 
             browser.DrawToBitmap(bitmap, new System.Drawing.Rectangle(0, 0, imageWidth, imageHeight));
 
-            bitmap.Save($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{Guid.NewGuid()}.bmp");
+            //bitmap.Save($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{Guid.NewGuid()}.bmp");
 
             return bitmap;
         }

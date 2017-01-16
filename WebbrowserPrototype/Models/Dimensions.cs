@@ -4,8 +4,8 @@ namespace WebbrowserPrototype
 {
     public class Dimensions
     {
-        public int BrowserWidth { get; set; }
-        public int BrowserHeight { get; set; }
+        public int RenderWidth { get; set; }
+        public int RenderHeight { get; set; }
         public int PageWidth { get; set; }
         public int PageHeight { get; set; }
         public int RenderedHeight { get; set; }
