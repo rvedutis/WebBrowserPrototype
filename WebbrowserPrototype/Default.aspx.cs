@@ -130,7 +130,7 @@ namespace WebbrowserPrototype
 
             browser.DrawToBitmap(bitmap, new System.Drawing.Rectangle(0, 0, imageWidth, imageHeight));
 
-            bitmap.Save($@"c:\users\bob\desktop\{Guid.NewGuid()}.bmp");
+            bitmap.Save($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{Guid.NewGuid()}.bmp");
 
             return bitmap;
         }
