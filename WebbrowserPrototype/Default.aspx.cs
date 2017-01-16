@@ -63,7 +63,7 @@ namespace WebbrowserPrototype
                         browser.Width = _dimensions.BrowserWidth * _dimensions.Zoom;
                         browser.Height = _dimensions.BrowserHeight * _dimensions.Zoom;
 
-                        browser.DocumentCompleted += (sender, e) => DocCompleted(sender, e);
+                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e);
 
                         while (browser.ReadyState != WebBrowserReadyState.Complete)
                         {
@@ -78,7 +78,7 @@ namespace WebbrowserPrototype
             thread.Join();
         }
 
-        private void DocCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
