@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="WebbrowserPrototype.Global" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="PDFConverter.Web.Global" Language="C#" %>

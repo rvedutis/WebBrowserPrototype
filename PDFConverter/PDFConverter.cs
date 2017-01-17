@@ -40,8 +40,7 @@ namespace PDFConverter
 
                     browser.Width = dimensions.RenderWidth * dimensions.Zoom;
                     browser.Height = dimensions.RenderHeight * dimensions.Zoom;
-
-
+                    
                     //browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
