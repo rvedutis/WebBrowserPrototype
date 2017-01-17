@@ -21,28 +21,14 @@ namespace PDFConverter
             }
 
             var instanceId = ConfigureInstance();
-            
+
             return Render(page, dimensions, instanceId);
-        }
-
-
-        private static Guid ConfigureInstance()
-        {
-            var instanceId = Guid.NewGuid();
-
-            Directory.CreateDirectory(GetInstanceFilePath(instanceId));
-
-            return instanceId;
-        }
-
-        private static string GetInstanceFilePath(Guid instanceId)
-        {
-            return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
         }
 
         private static Document Render(string page, Dimensions dimensions, Guid instanceId)
         {
-            var thread = new Thread(delegate()
+            var returnDocument = new Document();
+            var thread = new Thread(() =>
             {
                 using (var browser = new WebBrowser())
                 {
@@ -52,17 +38,18 @@ namespace PDFConverter
 
                     browser.DocumentText = page;
 
-                    browser.Width = dimensions.RenderWidth*dimensions.Zoom;
-                    browser.Height = dimensions.RenderHeight*dimensions.Zoom;
+                    browser.Width = dimensions.RenderWidth * dimensions.Zoom;
+                    browser.Height = dimensions.RenderHeight * dimensions.Zoom;
 
-                    var rectangle = new Rectangle(0, 0, browser.Width, browser.Height);
 
-                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
+                    //browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
                     {
                         Application.DoEvents();
                     }
+
+                    returnDocument = RenderCompleted(browser, dimensions, instanceId);
                 }
             });
 
@@ -70,19 +57,12 @@ namespace PDFConverter
             thread.Start();
             thread.Join();
 
-            return new Document();
+            return returnDocument;
         }
 
-        private static void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions,
-            Guid instanceId, Rectangle rectangle)
+        private static Document RenderCompleted(WebBrowser browser, Dimensions dimensions, Guid instanceId)
         {
-            var browser = sender as WebBrowser;
-            if (browser == null)
-            {
-                return;
-            }
-
-            var imageId = SaveWebPageAsImage(browser, instanceId, rectangle);
+            var imageId = SaveWebPageAsImage(browser, instanceId);
 
             using (var pdf = new Document())
             {
@@ -96,14 +76,13 @@ namespace PDFConverter
                     writer.CloseStream = false;
 
                     pdf.Open();
-
                     pdf.NewPage();
-
                     pdf.Add(CreateImage(imageId, instanceId, dimensions));
-
                     pdf.Close();
 
                     CleanUpArtifacts(instanceId);
+
+                    return pdf;
                 }
             }
         }
@@ -113,12 +92,12 @@ namespace PDFConverter
             Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
         }
 
-        private static Guid SaveWebPageAsImage(WebBrowser browser, Guid instanceId, Rectangle rectangle)
+        private static Guid SaveWebPageAsImage(WebBrowser browser, Guid instanceId)
         {
+            var rectangle = new Rectangle(0, 0, browser.Width, browser.Height);
+
             using (var bitmap = new Bitmap(browser.Width, browser.Height))
             {
-                bitmap.SetResolution(1000.0f, 1000.0f);
-
                 browser.DrawToBitmap(bitmap, rectangle);
 
                 var imageId = Guid.NewGuid();
@@ -133,9 +112,23 @@ namespace PDFConverter
         {
             var image = Image.GetInstance($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
 
-            image.ScalePercent(100/dimensions.Zoom);
+            image.ScalePercent(100 / dimensions.Zoom);
 
             return image;
+        }
+
+        private static Guid ConfigureInstance()
+        {
+            var instanceId = Guid.NewGuid();
+
+            Directory.CreateDirectory(GetInstanceFilePath(instanceId));
+
+            return instanceId;
+        }
+
+        private static string GetInstanceFilePath(Guid instanceId)
+        {
+            return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
         }
     }
 }

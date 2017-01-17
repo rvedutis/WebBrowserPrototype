@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Threading;
-using System.Web;
+using System.Linq;
 using System.Web.UI;
-using System.Windows.Forms;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using Image = iTextSharp.text.Image;
-using Rectangle = iTextSharp.text.Rectangle;
 
 namespace PDFConverter.Web
 {
@@ -42,10 +37,6 @@ namespace PDFConverter.Web
 
             var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
 
-            var instanceId = ConfigureInstance();
-
-            _totalPages = pages.Length;
-
             // START OF NEW CODE //
             var pdfs = new List<Document>();
             foreach (var page in pages)
@@ -54,120 +45,13 @@ namespace PDFConverter.Web
                 pdfs.Add(pdf);
             }
 
-            // Stitch together here
+            var testpdf = pdfs.First();
 
-            //Render(pages, dimensions, instanceId);
-        }
-
-        private Guid ConfigureInstance()
-        {
-            var instanceId = Guid.NewGuid();
-            
-            Directory.CreateDirectory(GetInstanceFilePath(instanceId));
-
-            return instanceId;
-        }
-
-        private static string GetInstanceFilePath(Guid instanceId)
-        {
-            return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
-        }
-
-        private void Render(string[] pages, Dimensions dimensions, Guid instanceId)
-        {
-            var thread = new Thread(delegate()
+            using (var outputStream = new MemoryStream())
             {
-                foreach (var page in pages)
-                {
-                    using (var browser = new WebBrowser())
-                    {
-                        browser.ScrollBarsEnabled = false;
-                        browser.AllowNavigation = false;
-                        browser.ScriptErrorsSuppressed = false;
-
-                        browser.DocumentText = page;
-
-                        browser.Width = dimensions.RenderWidth*dimensions.Zoom;
-                        browser.Height = dimensions.RenderHeight*dimensions.Zoom;
-
-                        var rectangle = new System.Drawing.Rectangle(0, 0, browser.Width, browser.Height);
-
-                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
-
-                        while (browser.ReadyState != WebBrowserReadyState.Complete)
-                        {
-                            System.Windows.Forms.Application.DoEvents();
-                        }
-                    }
-                }
-            });
-
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
-        }
-
-        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions, Guid instanceId, System.Drawing.Rectangle rectangle)
-        {
-            var browser = sender as WebBrowser;
-            if (browser == null)
-            {
-                return;
-            }
-
-            SaveWebPageAsImage(browser, instanceId, rectangle);
-
-            if (!_totalPages.Equals(images.Count))
-            {
-                return;
-            }
-
-            using (var pdf = new Document())
-            {
-                pdf.SetMargins(dimensions.MarginLeft, dimensions.MarginTop, dimensions.MarginRight,
-                    dimensions.MarginBottom);
-                pdf.SetPageSize(new Rectangle(dimensions.PageWidth, dimensions.PageHeight));
-
-                using (var outputStream = new MemoryStream())
-                {
-                    var writer = PdfWriter.GetInstance(pdf, outputStream);
-                    writer.CloseStream = false;
-
-                    pdf.Open();
-
-                    foreach (var image in images)
-                    {
-                        pdf.NewPage();
-
-                        pdf.Add(CreateImage(image, instanceId, dimensions));
-                    }
-
-                    pdf.Close();
-
-                    CleanUpArtifacts(instanceId);
-
-                    SendPdfToClient(outputStream);
-                }
-            }
-        }
-
-        private void CleanUpArtifacts(Guid instanceId)
-        {
-            Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
-        }
-
-        private void SaveWebPageAsImage(WebBrowser browser, Guid instanceId, System.Drawing.Rectangle rectangle)
-        {
-            using (var bitmap = new Bitmap(browser.Width, browser.Height))
-            {
-                bitmap.SetResolution(1000.0f, 1000.0f);
-
-                browser.DrawToBitmap(bitmap, rectangle);
-
-                var imageId = Guid.NewGuid();
-                images.Add(imageId);
-
-                bitmap.Save($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
+                var writer = PdfWriter.GetInstance(testpdf, outputStream);
+                writer.CloseStream = false;
+                SendPdfToClient(outputStream);
             }
         }
 
@@ -184,14 +68,5 @@ namespace PDFConverter.Web
             Response.Flush();
             Response.End();
         }
-
-        private static Image CreateImage(Guid imageId, Guid instanceId, Dimensions dimensions)
-        {
-            var image = Image.GetInstance($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
-
-            image.ScalePercent(100/dimensions.Zoom);
-
-            return image;
-        }
     }
- }
+}
