@@ -34,6 +34,9 @@
       <HintPath>..\packages\iTextSharp.5.5.10\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Persits.PDF">
+      <HintPath>..\..\..\Program Files (x86)\Persits Software\AspPDF.NET\Samples\Bin\Persits.PDF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

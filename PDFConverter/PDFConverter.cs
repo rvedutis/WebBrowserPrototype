@@ -1,133 +1,75 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Threading;
-using System.Web;
-using System.Windows.Forms;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using Image = iTextSharp.text.Image;
-using Rectangle = System.Drawing.Rectangle;
+﻿using Persits.PDF;
 
 namespace PDFConverter
 {
     public static class PDFConverter
     {
-        public static Document Convert(string page, Dimensions dimensions)
+        private const float pixelToPdf = .75F;
+
+        public static byte[] Convert(string page, Dimensions dimensions)
         {
             if (page == null)
             {
                 return null;
             }
 
-            var instanceId = ConfigureInstance();
-
-            return Render(page, dimensions, instanceId);
+            return Generate(page, dimensions);
         }
 
-        private static Document Render(string page, Dimensions dimensions, Guid instanceId)
+        public static byte[] Generate(string markup, Dimensions dimensions)
         {
-            var returnDocument = new Document();
-            var thread = new Thread(() =>
+            var manager = new PdfManager
             {
-                using (var browser = new WebBrowser())
+                RegKey = "GYlb/v2DbZp5SEU9AfMJwoqj07r/YHR+I9XLiQ3ykzkHH8ftMVaYBR/+twbs3fcRhit+VMCVPj5W"
+            };
+
+            var doc = manager.CreateDocument();
+            var page = doc.Pages.Add(dimensions.PageWidth*pixelToPdf, dimensions.PageHeight*pixelToPdf);
+
+            var imageHeight = BuildParam(
+                manager,
+                new[] {"PageHeight"},
+                new[] {(dimensions.RenderHeight*dimensions.Zoom).ToString()}
+                );
+
+            var image = doc.OpenUrl(markup, imageHeight);
+
+            var scale = page.Width/image.Width;
+
+            var imageScale = BuildParam(
+                manager,
+                new[]
                 {
-                    browser.ScrollBarsEnabled = false;
-                    browser.AllowNavigation = false;
-                    browser.ScriptErrorsSuppressed = false;
-
-                    browser.DocumentText = page;
-
-                    browser.Width = dimensions.RenderWidth * dimensions.Zoom;
-                    browser.Height = dimensions.RenderHeight * dimensions.Zoom;
-                    
-                    //browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
-
-                    while (browser.ReadyState != WebBrowserReadyState.Complete)
-                    {
-                        Application.DoEvents();
-                    }
-
-                    returnDocument = RenderCompleted(browser, dimensions, instanceId);
-                }
-            });
-
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
-
-            return returnDocument;
-        }
-
-        private static Document RenderCompleted(WebBrowser browser, Dimensions dimensions, Guid instanceId)
-        {
-            var imageId = SaveWebPageAsImage(browser, instanceId);
-
-            using (var pdf = new Document())
-            {
-                pdf.SetMargins(dimensions.MarginLeft, dimensions.MarginTop, dimensions.MarginRight,
-                    dimensions.MarginBottom);
-                pdf.SetPageSize(new iTextSharp.text.Rectangle(dimensions.PageWidth, dimensions.PageHeight));
-
-                using (var outputStream = new MemoryStream())
+                    "x",
+                    "y",
+                    "ScaleX",
+                    "ScaleY"
+                },
+                new[]
                 {
-                    var writer = PdfWriter.GetInstance(pdf, outputStream);
-                    writer.CloseStream = false;
-
-                    pdf.Open();
-                    pdf.NewPage();
-                    pdf.Add(CreateImage(imageId, instanceId, dimensions));
-                    pdf.Close();
-
-                    CleanUpArtifacts(instanceId);
-
-                    return pdf;
+                    (dimensions.MarginLeft*pixelToPdf).ToString(),
+                    (page.Height - dimensions.MarginTop*pixelToPdf - image.Height*scale).ToString(),
+                    scale.ToString(),
+                    scale.ToString()
                 }
-            }
+                );
+
+            page.Canvas.DrawImage(image, imageScale);
+
+            return doc.SaveToMemory();
         }
 
-        private static void CleanUpArtifacts(Guid instanceId)
+        private static PdfParam BuildParam(PdfManager manager, string[] keys, string[] values)
         {
-            Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
-        }
+            var paramString = string.Empty;
 
-        private static Guid SaveWebPageAsImage(WebBrowser browser, Guid instanceId)
-        {
-            var rectangle = new Rectangle(0, 0, browser.Width, browser.Height);
-
-            using (var bitmap = new Bitmap(browser.Width, browser.Height))
+            for (var index = 0; index < keys.Length; index++)
             {
-                browser.DrawToBitmap(bitmap, rectangle);
-
-                var imageId = Guid.NewGuid();
-
-                bitmap.Save($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
-
-                return imageId;
+                paramString = paramString + keys[index] + "=" + values[index] +
+                              (index + 1 != keys.Length ? "; " : string.Empty);
             }
-        }
 
-        private static Image CreateImage(Guid imageId, Guid instanceId, Dimensions dimensions)
-        {
-            var image = Image.GetInstance($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
-
-            image.ScalePercent(100 / dimensions.Zoom);
-
-            return image;
-        }
-
-        private static Guid ConfigureInstance()
-        {
-            var instanceId = Guid.NewGuid();
-
-            Directory.CreateDirectory(GetInstanceFilePath(instanceId));
-
-            return instanceId;
-        }
-
-        private static string GetInstanceFilePath(Guid instanceId)
-        {
-            return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
+            return manager.CreateParam(paramString);
         }
     }
 }

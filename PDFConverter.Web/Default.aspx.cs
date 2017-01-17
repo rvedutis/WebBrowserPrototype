@@ -38,8 +38,8 @@ namespace PDFConverter.Web
             var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
 
             // START OF NEW CODE //
-            var pdfs = new List<Document>();
-            foreach (var page in pages)
+            var pdfs = new List<byte[]>();
+            foreach (var page in pages.Take(1))
             {
                 var pdf = PDFConverter.Convert(page, dimensions);
                 pdfs.Add(pdf);
@@ -47,12 +47,29 @@ namespace PDFConverter.Web
 
             var testpdf = pdfs.First();
 
+            SendPdfToClient(testpdf);
+
+            /*
             using (var outputStream = new MemoryStream())
             {
                 var writer = PdfWriter.GetInstance(testpdf, outputStream);
                 writer.CloseStream = false;
                 SendPdfToClient(outputStream);
-            }
+            }*/
+        }
+
+        private void SendPdfToClient(byte[] pdf)
+        {
+            Response.Buffer = true;
+            Response.ClearHeaders();
+            Response.ClearContent();
+            Response.ContentType = "application/pdf";
+            Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
+            Response.AppendHeader("Content-Transfer-Encoding", "binary");
+            Response.AppendHeader("Content-Length", pdf.Length.ToString());
+            Response.BinaryWrite(pdf);
+            Response.Flush();
+            Response.End();
         }
 
         private void SendPdfToClient(MemoryStream outputStream)
