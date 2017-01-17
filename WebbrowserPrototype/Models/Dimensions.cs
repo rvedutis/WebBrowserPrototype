@@ -8,7 +8,6 @@ namespace WebbrowserPrototype
         public int RenderHeight { get; set; }
         public int PageWidth { get; set; }
         public int PageHeight { get; set; }
-        public int RenderedHeight { get; set; }
 
         public float MarginLeft { get; set; }
         public float MarginTop { get; set; }

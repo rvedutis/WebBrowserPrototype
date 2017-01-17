@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using System.Web;
 using System.Web.UI;
 using System.Windows.Forms;
 using iTextSharp.text;
@@ -15,10 +15,8 @@ namespace WebbrowserPrototype
 {
     public partial class _Default : Page
     {
-        private List<Bitmap> _bitmaps = new List<Bitmap>();
         private int _totalPages;
-        private Dimensions _dimensions = new Dimensions();
-        private const string _separator = "#####NEWPAGE#####";
+        private readonly List<Guid> images = new List<Guid>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -29,24 +27,46 @@ namespace WebbrowserPrototype
                 return;
             }
 
-            _dimensions.RenderWidth = int.Parse(Request.Form["RenderWidth"]);
-            _dimensions.RenderHeight = int.Parse(Request.Form["RenderHeight"]);
-            _dimensions.PageWidth = int.Parse(Request.Form["PageWidth"]);
-            _dimensions.PageHeight = int.Parse(Request.Form["PageHeight"]);
-            _dimensions.MarginLeft = Convert.ToSingle(Request.Form["MarginLeft"]);
-            _dimensions.MarginTop = Convert.ToSingle(Request.Form["MarginTop"]);
-            _dimensions.MarginRight = Convert.ToSingle(Request.Form["MarginRight"]);
-            _dimensions.MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"]);
-            _dimensions.Zoom = int.Parse(Request.Form["Zoom"]);
+            var dimensions = new Dimensions
+            {
+                RenderWidth = int.Parse(Request.Form["RenderWidth"]),
+                RenderHeight = int.Parse(Request.Form["RenderHeight"]),
+                PageWidth = int.Parse(Request.Form["PageWidth"]),
+                PageHeight = int.Parse(Request.Form["PageHeight"]),
+                MarginLeft = Convert.ToSingle(Request.Form["MarginLeft"]),
+                MarginTop = Convert.ToSingle(Request.Form["MarginTop"]),
+                MarginRight = Convert.ToSingle(Request.Form["MarginRight"]),
+                MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"]),
+                Zoom = int.Parse(Request.Form["Zoom"])
+            };
 
-            var pages = content.Split(new[] { _separator }, StringSplitOptions.None);
+            var splitPages = content.Split(new[] { "#####NEWPAGE#####" }, StringSplitOptions.None);
 
-            _totalPages = pages.Length;
+            var instanceId = ConfigureInstance();
 
-            GeneratePdf(pages);
+            _totalPages = splitPages.Length;
+
+            Render(splitPages, dimensions, instanceId);
+
         }
 
-        private void GeneratePdf(string[] pages)
+        private Guid ConfigureInstance()
+        {
+            var instanceId = Guid.NewGuid();
+
+            // instanceId = Guid.Parse("4b4fd2d8-6704-44c4-9532-cc04f1122de3");
+
+            Directory.CreateDirectory(GetInstanceFilePath(instanceId));
+
+            return instanceId;
+        }
+
+        private static string GetInstanceFilePath(Guid instanceId)
+        {
+            return $@"{HttpRuntime.AppDomainAppPath}\{instanceId}\";
+        }
+
+        private void Render(string[] pages, Dimensions dimensions, Guid instanceId)
         {
             var thread = new Thread(delegate ()
             {
@@ -60,10 +80,10 @@ namespace WebbrowserPrototype
 
                         browser.DocumentText = page;
 
-                        browser.Width = _dimensions.RenderWidth * _dimensions.Zoom;
-                        browser.Height = _dimensions.RenderHeight * _dimensions.Zoom;
+                        browser.Width = dimensions.RenderWidth * dimensions.Zoom;
+                        browser.Height = dimensions.RenderHeight * dimensions.Zoom;
 
-                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e);
+                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId);
 
                         while (browser.ReadyState != WebBrowserReadyState.Complete)
                         {
@@ -78,7 +98,8 @@ namespace WebbrowserPrototype
             thread.Join();
         }
 
-        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions,
+            Guid instanceId)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
@@ -86,19 +107,18 @@ namespace WebbrowserPrototype
                 return;
             }
 
-            var webPageAsBitmap = GetWebPageAsBitmap(browser);
+            SaveWebPageAsImage(browser, instanceId);
 
-            _bitmaps.Add(webPageAsBitmap);
-
-            if (!_totalPages.Equals(_bitmaps.Count))
+            if (!_totalPages.Equals(images.Count))
             {
                 return;
             }
 
             using (var pdf = new Document())
             {
-                pdf.SetMargins(_dimensions.MarginLeft, _dimensions.MarginTop, _dimensions.MarginRight, _dimensions.MarginBottom);
-                pdf.SetPageSize(new Rectangle(_dimensions.PageWidth, _dimensions.PageHeight));
+                pdf.SetMargins(dimensions.MarginLeft, dimensions.MarginTop, dimensions.MarginRight,
+                    dimensions.MarginBottom);
+                pdf.SetPageSize(new Rectangle(dimensions.PageWidth, dimensions.PageHeight));
 
                 using (var outputStream = new MemoryStream())
                 {
@@ -107,11 +127,11 @@ namespace WebbrowserPrototype
 
                     pdf.Open();
 
-                    foreach (var bitmap in _bitmaps)
+                    foreach (var image in images)
                     {
                         pdf.NewPage();
 
-                        pdf.Add(CreateImage(bitmap));
+                        pdf.Add(CreateImage(image, instanceId, dimensions));
                     }
 
                     pdf.Close();
@@ -121,18 +141,19 @@ namespace WebbrowserPrototype
             }
         }
 
-        private Bitmap GetWebPageAsBitmap(WebBrowser browser)
+        private void SaveWebPageAsImage(WebBrowser browser, Guid instanceId)
         {
-            var imageHeight = _dimensions.RenderHeight * _dimensions.Zoom;
-            var imageWidth = _dimensions.RenderWidth * _dimensions.Zoom;
+            var rectangle = new System.Drawing.Rectangle(0, 0, browser.Width, browser.Height);
 
-            var bitmap = new Bitmap(imageWidth, imageHeight);
+            using (var bitmap = new Bitmap(browser.Width, browser.Height))
+            {
+                browser.DrawToBitmap(bitmap, rectangle);
 
-            browser.DrawToBitmap(bitmap, new System.Drawing.Rectangle(0, 0, imageWidth, imageHeight));
+                var imageId = Guid.NewGuid();
+                images.Add(imageId);
 
-            //bitmap.Save($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{Guid.NewGuid()}.bmp");
-
-            return bitmap;
+                bitmap.Save($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
+            }
         }
 
         private void SendPdfToClient(MemoryStream outputStream)
@@ -149,17 +170,13 @@ namespace WebbrowserPrototype
             Response.End();
         }
 
-        private Image CreateImage(Bitmap bitmap)
+        private static Image CreateImage(Guid imageId, Guid instanceId, Dimensions dimensions)
         {
-            using (var ms = new MemoryStream())
-            {
-                bitmap.Save(ms, ImageFormat.Bmp);
-                var image = Image.GetInstance(ms.ToArray());
+            var image = Image.GetInstance($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
 
-                image.ScalePercent(100 / _dimensions.Zoom);
+            image.ScalePercent(100 / dimensions.Zoom);
 
-                return image;
-            }
+            return image;
         }
     }
 }

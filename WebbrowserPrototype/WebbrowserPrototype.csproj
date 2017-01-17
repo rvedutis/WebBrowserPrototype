@@ -189,6 +189,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="DevelopmentHelpers.cs" />
+    <Compile Include="LockBitmap.cs" />
     <Compile Include="Models\Dimensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
