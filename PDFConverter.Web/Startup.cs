@@ -1,8 +1,9 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using PDFConverter.Web;
 
-[assembly: OwinStartupAttribute(typeof(WebbrowserPrototype.Startup))]
-namespace WebbrowserPrototype
+[assembly: OwinStartup(typeof(Startup))]
+namespace PDFConverter.Web
 {
     public partial class Startup {
         public void Configuration(IAppBuilder app) {

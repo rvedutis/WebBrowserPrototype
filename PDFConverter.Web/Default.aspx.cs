@@ -11,7 +11,7 @@ using iTextSharp.text.pdf;
 using Image = iTextSharp.text.Image;
 using Rectangle = iTextSharp.text.Rectangle;
 
-namespace WebbrowserPrototype
+namespace PDFConverter.Web
 {
     public partial class _Default : Page
     {
@@ -40,21 +40,19 @@ namespace WebbrowserPrototype
                 Zoom = int.Parse(Request.Form["Zoom"])
             };
 
-            var splitPages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
+            var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
 
             var instanceId = ConfigureInstance();
 
-            _totalPages = splitPages.Length;
+            _totalPages = pages.Length;
 
-            Render(splitPages, dimensions, instanceId);
+            Render(pages, dimensions, instanceId);
         }
 
         private Guid ConfigureInstance()
         {
             var instanceId = Guid.NewGuid();
-
-            // instanceId = Guid.Parse("4b4fd2d8-6704-44c4-9532-cc04f1122de3");
-
+            
             Directory.CreateDirectory(GetInstanceFilePath(instanceId));
 
             return instanceId;
@@ -82,7 +80,9 @@ namespace WebbrowserPrototype
                         browser.Width = dimensions.RenderWidth*dimensions.Zoom;
                         browser.Height = dimensions.RenderHeight*dimensions.Zoom;
 
-                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId);
+                        var rectangle = new System.Drawing.Rectangle(0, 0, browser.Width, browser.Height);
+
+                        browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
 
                         while (browser.ReadyState != WebBrowserReadyState.Complete)
                         {
@@ -97,8 +97,7 @@ namespace WebbrowserPrototype
             thread.Join();
         }
 
-        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions,
-            Guid instanceId)
+        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions, Guid instanceId, System.Drawing.Rectangle rectangle)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
@@ -106,7 +105,7 @@ namespace WebbrowserPrototype
                 return;
             }
 
-            SaveWebPageAsImage(browser, instanceId);
+            SaveWebPageAsImage(browser, instanceId, rectangle);
 
             if (!_totalPages.Equals(images.Count))
             {
@@ -147,12 +146,12 @@ namespace WebbrowserPrototype
             Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
         }
 
-        private void SaveWebPageAsImage(WebBrowser browser, Guid instanceId)
+        private void SaveWebPageAsImage(WebBrowser browser, Guid instanceId, System.Drawing.Rectangle rectangle)
         {
-            var rectangle = new System.Drawing.Rectangle(0, 0, browser.Width, browser.Height);
-
             using (var bitmap = new Bitmap(browser.Width, browser.Height))
             {
+                bitmap.SetResolution(1000.0f, 1000.0f);
+
                 browser.DrawToBitmap(bitmap, rectangle);
 
                 var imageId = Guid.NewGuid();

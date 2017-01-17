@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebbrowserPrototype {
+namespace PDFConverter.Web {
     
     
     public partial class _Default {
