@@ -15,8 +15,8 @@ namespace WebbrowserPrototype
 {
     public partial class _Default : Page
     {
-        private int _totalPages;
         private readonly List<Guid> images = new List<Guid>();
+        private int _totalPages;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -40,14 +40,13 @@ namespace WebbrowserPrototype
                 Zoom = int.Parse(Request.Form["Zoom"])
             };
 
-            var splitPages = content.Split(new[] { "#####NEWPAGE#####" }, StringSplitOptions.None);
+            var splitPages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
 
             var instanceId = ConfigureInstance();
 
             _totalPages = splitPages.Length;
 
             Render(splitPages, dimensions, instanceId);
-
         }
 
         private Guid ConfigureInstance()
@@ -68,7 +67,7 @@ namespace WebbrowserPrototype
 
         private void Render(string[] pages, Dimensions dimensions, Guid instanceId)
         {
-            var thread = new Thread(delegate ()
+            var thread = new Thread(delegate()
             {
                 foreach (var page in pages)
                 {
@@ -80,8 +79,8 @@ namespace WebbrowserPrototype
 
                         browser.DocumentText = page;
 
-                        browser.Width = dimensions.RenderWidth * dimensions.Zoom;
-                        browser.Height = dimensions.RenderHeight * dimensions.Zoom;
+                        browser.Width = dimensions.RenderWidth*dimensions.Zoom;
+                        browser.Height = dimensions.RenderHeight*dimensions.Zoom;
 
                         browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId);
 
@@ -181,9 +180,24 @@ namespace WebbrowserPrototype
         {
             var image = Image.GetInstance($@"{GetInstanceFilePath(instanceId)}{imageId}.bmp");
 
-            image.ScalePercent(100 / dimensions.Zoom);
+            image.ScalePercent(100/dimensions.Zoom);
 
             return image;
         }
+    }
+
+    public class Dimensions
+    {
+        public int RenderWidth { get; set; }
+        public int RenderHeight { get; set; }
+        public int PageWidth { get; set; }
+        public int PageHeight { get; set; }
+
+        public float MarginLeft { get; set; }
+        public float MarginTop { get; set; }
+        public float MarginRight { get; set; }
+        public float MarginBottom { get; set; }
+
+        public int Zoom { get; set; }
     }
 }
