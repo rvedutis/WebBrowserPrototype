@@ -46,7 +46,17 @@ namespace PDFConverter.Web
 
             _totalPages = pages.Length;
 
-            Render(pages, dimensions, instanceId);
+            // START OF NEW CODE //
+            var pdfs = new List<Document>();
+            foreach (var page in pages)
+            {
+                var pdf = PDFConverter.Convert(page, dimensions);
+                pdfs.Add(pdf);
+            }
+
+            // Stitch together here
+
+            //Render(pages, dimensions, instanceId);
         }
 
         private Guid ConfigureInstance()
@@ -184,19 +194,4 @@ namespace PDFConverter.Web
             return image;
         }
     }
-
-    public class Dimensions
-    {
-        public int RenderWidth { get; set; }
-        public int RenderHeight { get; set; }
-        public int PageWidth { get; set; }
-        public int PageHeight { get; set; }
-
-        public float MarginLeft { get; set; }
-        public float MarginTop { get; set; }
-        public float MarginRight { get; set; }
-        public float MarginBottom { get; set; }
-
-        public int Zoom { get; set; }
-    }
-}
+ }

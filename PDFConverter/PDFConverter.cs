@@ -11,9 +11,9 @@ using Rectangle = System.Drawing.Rectangle;
 
 namespace PDFConverter
 {
-    public class Converter
+    public static class PDFConverter
     {
-        public Document Convert(string page, Dimensions dimensions)
+        public static Document Convert(string page, Dimensions dimensions)
         {
             if (page == null)
             {
@@ -21,14 +21,12 @@ namespace PDFConverter
             }
 
             var instanceId = ConfigureInstance();
-
-            Render(page, dimensions, instanceId);
-
-            return new Document();
+            
+            return Render(page, dimensions, instanceId);
         }
 
 
-        private Guid ConfigureInstance()
+        private static Guid ConfigureInstance()
         {
             var instanceId = Guid.NewGuid();
 
@@ -42,7 +40,7 @@ namespace PDFConverter
             return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
         }
 
-        private void Render(string page, Dimensions dimensions, Guid instanceId)
+        private static Document Render(string page, Dimensions dimensions, Guid instanceId)
         {
             var thread = new Thread(delegate()
             {
@@ -59,8 +57,7 @@ namespace PDFConverter
 
                     var rectangle = new Rectangle(0, 0, browser.Width, browser.Height);
 
-                    browser.DocumentCompleted +=
-                        (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
+                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions, instanceId, rectangle);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
                     {
@@ -72,15 +69,17 @@ namespace PDFConverter
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join();
+
+            return new Document();
         }
 
-        private Document RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions,
+        private static void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions,
             Guid instanceId, Rectangle rectangle)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
             {
-                return null;
+                return;
             }
 
             var imageId = SaveWebPageAsImage(browser, instanceId, rectangle);
@@ -105,18 +104,16 @@ namespace PDFConverter
                     pdf.Close();
 
                     CleanUpArtifacts(instanceId);
-
-                    return pdf;
                 }
             }
         }
 
-        private void CleanUpArtifacts(Guid instanceId)
+        private static void CleanUpArtifacts(Guid instanceId)
         {
             Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
         }
 
-        private Guid SaveWebPageAsImage(WebBrowser browser, Guid instanceId, Rectangle rectangle)
+        private static Guid SaveWebPageAsImage(WebBrowser browser, Guid instanceId, Rectangle rectangle)
         {
             using (var bitmap = new Bitmap(browser.Width, browser.Height))
             {
