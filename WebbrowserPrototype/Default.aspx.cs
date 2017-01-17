@@ -63,7 +63,7 @@ namespace WebbrowserPrototype
 
         private static string GetInstanceFilePath(Guid instanceId)
         {
-            return $@"{HttpRuntime.AppDomainAppPath}\{instanceId}\";
+            return $@"{HttpRuntime.AppDomainAppPath}\artifacts\{instanceId}\";
         }
 
         private void Render(string[] pages, Dimensions dimensions, Guid instanceId)
@@ -136,9 +136,16 @@ namespace WebbrowserPrototype
 
                     pdf.Close();
 
+                    CleanUpArtifacts(instanceId);
+
                     SendPdfToClient(outputStream);
                 }
             }
+        }
+
+        private void CleanUpArtifacts(Guid instanceId)
+        {
+            Directory.Delete($@"{GetInstanceFilePath(instanceId)}", true);
         }
 
         private void SaveWebPageAsImage(WebBrowser browser, Guid instanceId)
