@@ -1,4 +1,5 @@
 ﻿using Persits.PDF;
+using System.Collections.Generic;
 
 namespace PDFConverter
 {
@@ -23,50 +24,41 @@ namespace PDFConverter
                 RegKey = "GYlb/v2DbZp5SEU9AfMJwoqj07r/YHR+I9XLiQ3ykzkHH8ftMVaYBR/+twbs3fcRhit+VMCVPj5W"
             };
 
-            var doc = manager.CreateDocument();
-            var page = doc.Pages.Add(dimensions.PageWidth*pixelToPdf, dimensions.PageHeight*pixelToPdf);
+            using (var doc = manager.CreateDocument())
+            {
+                var page = doc.Pages.Add(dimensions.PageWidth * pixelToPdf, dimensions.PageHeight * pixelToPdf);
 
-            var imageHeight = BuildParam(
-                manager,
-                new[] {"PageHeight"},
-                new[] {(dimensions.RenderHeight*dimensions.Zoom).ToString()}
-                );
-
-            var image = doc.OpenUrl(markup, imageHeight);
-
-            var scale = page.Width/image.Width;
-
-            var imageScale = BuildParam(
-                manager,
-                new[]
+                var browserOptions = new Dictionary<string, object>
                 {
-                    "x",
-                    "y",
-                    "ScaleX",
-                    "ScaleY"
-                },
-                new[]
+                    { "PageHeight", dimensions.RenderHeight * dimensions.Zoom },
+                    { "Scripts", false }
+                };
+
+                var image = doc.OpenUrl(markup, BuildParam(manager, browserOptions));
+
+                var imageScale = new Dictionary<string, object>
                 {
-                    (dimensions.MarginLeft*pixelToPdf).ToString(),
-                    (page.Height - dimensions.MarginTop*pixelToPdf - image.Height*scale).ToString(),
-                    scale.ToString(),
-                    scale.ToString()
-                }
-                );
+                    { "x", dimensions.MarginLeft * pixelToPdf },
+                    { "y", page.Height - (dimensions.MarginTop * pixelToPdf) - (image.Height * (page.Width / image.Width)) },
+                    { "ScaleX", page.Width / image.Width },
+                    { "ScaleY", page.Width / image.Width }
+                };
 
-            page.Canvas.DrawImage(image, imageScale);
+                page.Canvas.DrawImage(image, BuildParam(manager, imageScale));
 
-            return doc.SaveToMemory();
+                return doc.SaveToMemory();
+            }
         }
 
-        private static PdfParam BuildParam(PdfManager manager, string[] keys, string[] values)
+        private static PdfParam BuildParam(PdfManager manager, Dictionary<string, object> options)
         {
             var paramString = string.Empty;
+            int counter = 1;
 
-            for (var index = 0; index < keys.Length; index++)
+            foreach (var key in options.Keys)
             {
-                paramString = paramString + keys[index] + "=" + values[index] +
-                              (index + 1 != keys.Length ? "; " : string.Empty);
+                paramString = paramString + key + "=" + options[key].ToString() + (counter < options.Keys.Count ? "; " : string.Empty);
+                counter++;
             }
 
             return manager.CreateParam(paramString);
