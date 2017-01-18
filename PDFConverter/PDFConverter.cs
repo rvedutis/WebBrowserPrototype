@@ -14,6 +14,28 @@ namespace PDFConverter
 
         public static byte[] Convert(string markup, Dimensions dimensions)
         {
+            return ConvertMarkup(new string[] { markup }, dimensions)[0];
+        }
+
+        public static byte[] Convert(string[] markupList, Dimensions dimensions)
+        {
+            return Combine(ConvertMarkup(markupList, dimensions));
+        }
+
+        private static List<byte[]> ConvertMarkup(string[] markupList, Dimensions dimensions)
+        {
+            var pdfs = new List<byte[]>();
+
+            foreach (var markup in markupList)
+            {
+                pdfs.Add(MarkupToPDF(markup, dimensions));
+            }
+
+            return pdfs;
+        }
+
+        private static byte[] MarkupToPDF(string markup, Dimensions dimensions)
+        {
             var doc = manager.CreateDocument();
 
             var page = doc.Pages.Add(dimensions.PageWidth * pixelToPdf, dimensions.PageHeight * pixelToPdf);

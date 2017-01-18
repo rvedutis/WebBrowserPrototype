@@ -32,17 +32,9 @@ namespace PDFConverter.Web
             };
 
             var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
-            var pdfs = new List<byte[]>();
+            var pdf = PDFConverter.Convert(pages, dimensions);
 
-            foreach (var page in pages)
-            {
-                var pdf = PDFConverter.Convert(page, dimensions);
-                pdfs.Add(pdf);
-            }
-
-            var finalPDf = PDFConverter.Combine(pdfs);
-
-            SendPdfToClient(finalPDf);
+            SendPdfToClient(pdf);
 
         }
 
