@@ -42,19 +42,15 @@ namespace PDFConverter
                     );
 
                     newPage.Canvas.DrawGraphics(graphics, imageScale);
-
-                    Marshal.ReleaseComObject(imageScale);
-                    Marshal.ReleaseComObject(newPage);
-                    Marshal.ReleaseComObject(graphics);
+                    ReleaseComObjects(new object[] { imageScale, newPage, graphics });
                 }
 
-                Marshal.ReleaseComObject(doc);
+                ReleaseComObjects(new object[] { doc });
             }
 
             var docBytes = combinedDoc.SaveToMemory();
-
-            Marshal.ReleaseComObject(combinedDoc);
-            Marshal.ReleaseComObject(manager);
+            
+            ReleaseComObjects(new object[] { combinedDoc, manager });
 
             return docBytes;
         }
@@ -105,12 +101,7 @@ namespace PDFConverter
 
             var docBytes = doc.SaveToMemory();
 
-            Marshal.ReleaseComObject(imageScale);
-            Marshal.ReleaseComObject(image);
-            Marshal.ReleaseComObject(browserOptions);
-            Marshal.ReleaseComObject(page);
-            Marshal.ReleaseComObject(doc);
-            Marshal.ReleaseComObject(manager);
+            ReleaseComObjects(new object[] { imageScale, image, browserOptions, page, doc, manager });
 
             return docBytes;
         }
@@ -132,6 +123,14 @@ namespace PDFConverter
             }
 
             return manager.CreateParam(paramString);
+        }
+
+        private static void ReleaseComObjects(object[] comObjects)
+        {
+            foreach (var comObject in comObjects)
+            {
+                Marshal.ReleaseComObject(comObject);
+            }
         }
     }
 }
