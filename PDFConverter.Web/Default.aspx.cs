@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Threading;
 using System.Web.UI;
+using System.Linq;
 
 namespace PDFConverter.Web
 {
@@ -32,10 +33,27 @@ namespace PDFConverter.Web
             };
 
             var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
-            var pdf = PDFConverter.Convert(pages, dimensions);
+            var pdfs = new List<byte[]>();
+            var threads = new List<Thread>();
 
-            SendPdfToClient(pdf);
+            foreach (var page in pages)
+            {
+                var thread = new Thread(delegate()
+                {
+                    var pdf = PDFConverter.Convert(page, dimensions);
+                    pdfs.Add(pdf);
+                });
 
+                threads.Add(thread);
+                thread.Start();
+            }
+
+            while (pdfs.Count() != pages.Length)
+            {
+                System.Windows.Forms.Application.DoEvents();
+            }
+            
+            SendPdfToClient(PDFConverter.Combine(pdfs));
         }
 
         private void SendPdfToClient(byte[] pdf)
