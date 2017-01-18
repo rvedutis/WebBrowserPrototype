@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pdf.cs" />
     <Compile Include="PDFConverter.cs" />
     <Compile Include="Dimensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

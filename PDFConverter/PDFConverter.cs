@@ -1,31 +1,35 @@
-﻿using ASPPDFLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using ASPPDFLib;
 
 namespace PDFConverter
 {
     public static class PDFConverter
     {
-        public static byte[] Convert(string markup, Dimensions dimensions)
+        private const float PixelToPdf = .75F;
+
+        public static void Convert(ref Pdf pdf, Dimensions dimensions)
         {
-            return ConvertMarkup(new string[] { markup }, dimensions)[0];
+            var pdfs = new[] { pdf };
+            ConvertMarkup(ref pdfs, dimensions);
         }
 
-        public static byte[] Convert(string[] markupList, Dimensions dimensions)
+        /*
+        public static void Convert(Pdf[] pdfs, Dimensions dimensions)
         {
-            return Combine(ConvertMarkup(markupList, dimensions));
-        }
+            Combine(ConvertMarkup(pdfs, dimensions));
+        }*/
 
-        public static byte[] Combine(List<byte[]> pdfs)
+        public static byte[] Combine(List<Pdf> pdfs)
         {
-            var manager = getPdfManager();
+            var manager = GetPdfManager();
             var combinedDoc = manager.CreateDocument();
 
             foreach (var pdf in pdfs)
             {
-                var doc = manager.OpenDocumentBinary(pdf);
+                var doc = manager.OpenDocumentBinary(pdf.Bytes);
 
-                for (int index = 0; index < doc.Pages.Count; index++)
+                for (var index = 0; index < doc.Pages.Count; index++)
                 {
                     var graphics = combinedDoc.CreateGraphicsFromPage(doc, index + 1);
                     var newPage = combinedDoc.Pages.Add(doc.Pages[index + 1].Width, doc.Pages[index + 1].Height);
@@ -34,12 +38,12 @@ namespace PDFConverter
                         manager,
                         new Dictionary<string, object>
                         {
-                            { "x", 0 },
-                            { "y", 0 },
-                            { "ScaleX", 1 },
-                            { "ScaleY", 1 }
+                            {"x", 0},
+                            {"y", 0},
+                            {"ScaleX", 1},
+                            {"ScaleY", 1}
                         }
-                    );
+                        );
 
                     newPage.Canvas.DrawGraphics(graphics, imageScale);
                     ReleaseComObjects(new object[] { imageScale, newPage, graphics });
@@ -49,53 +53,47 @@ namespace PDFConverter
             }
 
             var docBytes = combinedDoc.SaveToMemory();
-            
+
             ReleaseComObjects(new object[] { combinedDoc, manager });
 
             return docBytes;
         }
 
-        private const float pixelToPdf = .75F;
-
-        private static List<byte[]> ConvertMarkup(string[] markupList, Dimensions dimensions)
+        private static void ConvertMarkup(ref Pdf[] pdfs, Dimensions dimensions)
         {
-            var pdfs = new List<byte[]>();
-
-            foreach (var markup in markupList)
+            foreach (var pdf in pdfs)
             {
-                pdfs.Add(MarkupToPDF(markup, dimensions));
+                MarkupToPdf(pdf, dimensions);
             }
-
-            return pdfs;
         }
 
-        private static byte[] MarkupToPDF(string markup, Dimensions dimensions)
+        private static void MarkupToPdf(Pdf pdf, Dimensions dimensions)
         {
-            var manager = getPdfManager();
+            var manager = GetPdfManager();
             var doc = manager.CreateDocument();
-            var page = doc.Pages.Add(dimensions.PageWidth * pixelToPdf, dimensions.PageHeight * pixelToPdf);
+            var page = doc.Pages.Add(dimensions.PageWidth * PixelToPdf, dimensions.PageHeight * PixelToPdf);
 
             var browserOptions = BuildParam(
                 manager,
                 new Dictionary<string, object>
                 {
-                    { "PageHeight", dimensions.RenderHeight * dimensions.Zoom },
-                    { "Scripts", false }
+                    {"PageHeight", dimensions.RenderHeight*dimensions.Zoom},
+                    {"Scripts", false}
                 }
-            );
+                );
 
-            var image = doc.OpenUrl(markup, browserOptions);
+            var image = doc.OpenUrl(pdf.Markup, browserOptions);
 
             var imageScale = BuildParam(
                 manager,
                 new Dictionary<string, object>
                 {
-                    { "x", dimensions.MarginLeft * pixelToPdf },
-                    { "y", page.Height - (dimensions.MarginTop * pixelToPdf) - (image.Height * (page.Width / image.Width)) },
-                    { "ScaleX", page.Width / image.Width },
-                    { "ScaleY", page.Width / image.Width }
+                    {"x", dimensions.MarginLeft*PixelToPdf},
+                    {"y", page.Height - dimensions.MarginTop*PixelToPdf - image.Height*(page.Width/image.Width)},
+                    {"ScaleX", page.Width/image.Width},
+                    {"ScaleY", page.Width/image.Width}
                 }
-            );
+                );
 
             page.Canvas.DrawImage(image, imageScale);
 
@@ -103,22 +101,26 @@ namespace PDFConverter
 
             ReleaseComObjects(new object[] { imageScale, image, browserOptions, page, doc, manager });
 
-            return docBytes;
+            pdf.Bytes = docBytes;
         }
 
-        private static PdfManager getPdfManager()
+        private static PdfManager GetPdfManager()
         {
-            return new PdfManager { RegKey = "IWezgv+yqt4GIAc213KacCXF1YqRnVGi/TkEGJnd8oBlQMSy/9zzPdk7EzuLOVwZ5X1Vzc5OANZ3" };
+            return new PdfManager
+            {
+                RegKey = "IWezgv+yqt4GIAc213KacCXF1YqRnVGi/TkEGJnd8oBlQMSy/9zzPdk7EzuLOVwZ5X1Vzc5OANZ3"
+            };
         }
 
         private static IPdfParam BuildParam(PdfManager manager, Dictionary<string, object> options)
         {
             var paramString = string.Empty;
-            int counter = 1;
+            var counter = 1;
 
             foreach (var key in options.Keys)
             {
-                paramString = paramString + key + "=" + options[key].ToString() + (counter < options.Keys.Count ? "; " : string.Empty);
+                paramString = paramString + key + "=" + options[key] +
+                              (counter < options.Keys.Count ? "; " : string.Empty);
                 counter++;
             }
 

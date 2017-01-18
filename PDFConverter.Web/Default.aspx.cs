@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Threading.Tasks;
 
@@ -31,16 +32,21 @@ namespace PDFConverter.Web
                 Zoom = int.Parse(Request.Form["Zoom"])
             };
 
-            var pages = content.Split(new[] {"#####NEWPAGE#####"}, StringSplitOptions.None);
-            var pdfs = new List<byte[]>();
+            var pages = content.Split(new[] { "#####NEWPAGE#####" }, StringSplitOptions.None);
 
-            Parallel.ForEach(pages, (page) =>
+            var pdfs = pages.Select((t, i) => new Pdf
             {
-                var pdf = PDFConverter.Convert(page, dimensions);
-                pdfs.Add(pdf);
+                Index = i,
+                Markup = t,
+                Bytes = null
+            }).ToList();
+
+            Parallel.ForEach(pdfs, (pdf) =>
+            {
+                PDFConverter.Convert(ref pdf, dimensions);
             });
 
-            SendPdfToClient(PDFConverter.Combine(pdfs));
+            SendPdfToClient(PDFConverter.Combine(pdfs.OrderBy(p => p.Index).ToList()));
         }
 
         private void SendPdfToClient(byte[] pdf)
