@@ -77,7 +77,8 @@ namespace PDFConverter
                 manager,
                 new Dictionary<string, object>
                 {
-                    {"PageHeight", dimensions.RenderHeight*dimensions.Zoom},
+                    {"WindowHeight", dimensions.RenderHeight*dimensions.Zoom},
+                    {"WindowWidth", dimensions.RenderWidth*dimensions.Zoom},
                     {"Scripts", false}
                 }
                 );
