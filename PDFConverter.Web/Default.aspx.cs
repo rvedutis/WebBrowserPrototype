@@ -40,6 +40,17 @@ namespace PDFConverter.Web
                 Markup = t,
                 Bytes = null
             }).ToList();
+            /*
+            while (pdfs.Any(p => p.Bytes == null))
+            {
+                var chunk = pdfs.Where(p => p.Bytes == null).Take(5);
+
+                Parallel.ForEach(chunk, (pdf) =>
+                {
+                    PDFConverter.Convert(ref pdf, dimensions);
+                });
+            }
+            */
 
             Parallel.ForEach(pdfs, (pdf) =>
             {
