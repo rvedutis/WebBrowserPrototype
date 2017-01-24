@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Web.UI;
 using System.Windows.Forms;
 using novapiLib80;
 using SHDocVw;
 using WebBrowser = System.Windows.Forms.WebBrowser;
 
-namespace PDFConverter.Web
+namespace ConsoleConverter
 {
-    public partial class _Default : Page
+    public class Program
     {
         public static string PRINTER_NAME = "novaPDF SDK 8";
-        public string NOVAPDF_INFO_SUBJECT = "Document Subject";
+        public static string NOVAPDF_INFO_SUBJECT = "Document Subject";
         public static string PROFILE_NAME = "PestPacForms";
         public static int PROFILE_IS_PUBLIC = 1;
 
@@ -61,74 +58,26 @@ namespace PDFConverter.Web
             public static long NV_NO_ACTIVE_PROFILE = 0xD5DA0028;
         }
 
-        protected void Page_Load(object sender, EventArgs e)
+        public static void Main(string[] args)
         {
-            var content = Server.UrlDecode(Request.Form["RenderedContent"]);
-
-            if (content == null)
-            {
-                return;
-            }
-
-            var dimensions = new Dimensions
-            {
-                RenderWidth = int.Parse(Request.Form["RenderWidth"]),
-                RenderHeight = int.Parse(Request.Form["RenderHeight"]),
-                PageWidth = int.Parse(Request.Form["PageWidth"]),
-                PageHeight = int.Parse(Request.Form["PageHeight"]),
-                MarginLeft = Convert.ToSingle(Request.Form["MarginLeft"]),
-                MarginTop = Convert.ToSingle(Request.Form["MarginTop"]),
-                MarginRight = Convert.ToSingle(Request.Form["MarginRight"]),
-                MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"]),
-                Zoom = int.Parse(Request.Form["Zoom"])
-            };
-
-            var pages = content.Split(new[] { "#####NEWPAGE#####" }, StringSplitOptions.None);
-
-            Render(pages.First(), dimensions);
-        }
-
-
-        private void Render(string page, Dimensions dimensions)
-        {/*
-            var p = new Process
-            {
-                StartInfo =
-                {
-                    WorkingDirectory = @"C:\src\PDFConverter\ConsoleConverter\bin\Debug\",
-                    FileName = @"C:\src\PDFConverter\ConsoleConverter\bin\Debug\ConsoleConverter.exe",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = false
-                }
-            };
-
-            p.Start();
-
-            p.WaitForExit();
-
-            var c = p.ExitCode;           
-            */
-
             var thread = new Thread(delegate ()
             {
                 using (var browser = new WebBrowser())
                 {
-                    //browser.ScrollBarsEnabled = false;
-                    //browser.AllowNavigation = false;
-                    //browser.ScriptErrorsSuppressed = false;
+                    browser.ScrollBarsEnabled = false;
+                    browser.AllowNavigation = false;
+                    browser.ScriptErrorsSuppressed = false;
 
-                    browser.DocumentText = page;
+                    browser.DocumentText = "<html><head></head><body>Hi There</body></html>";
 
-                    browser.Width = dimensions.RenderWidth * dimensions.Zoom;
-                    browser.Height = dimensions.RenderHeight * dimensions.Zoom;
+                    browser.Width = 816;
+                    browser.Height = 1056;
 
-                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, dimensions);
+                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
                     {
-                        System.Windows.Forms.Application.DoEvents();
+                        Application.DoEvents();
                     }
 
                 }
@@ -137,16 +86,17 @@ namespace PDFConverter.Web
             thread.SetApartmentState(ApartmentState.STA);
             thread.Name = "WebBrowserPrint";
             thread.Start();
-            thread.Join();
         }
 
-        private void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, Dimensions dimensions)
+        private static void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs webBrowserDocumentCompletedEventArgs)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
             {
                 return;
             }
+
+            var ie = (InternetExplorer) browser.ActiveXInstance;
 
             var documentId = Guid.NewGuid();
 
@@ -180,37 +130,10 @@ namespace PDFConverter.Web
             pNova.SetActiveProfile(activeProfile);
             pNova.SetDefaultPrinter();
 
-            browser.Print();
-
+            ie.ExecWB(OLECMDID.OLECMDID_PRINT, OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 0);
+            //browser.Print();
+            
+            File.Create($@"c:\Users\bob\Desktop\Done.txt");
         }
-
-        private void SendPdfToClient(MemoryStream outputStream)
-        {
-            Response.Buffer = true;
-            Response.ClearHeaders();
-            Response.ClearContent();
-            Response.ContentType = "application/pdf";
-            Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
-            Response.AppendHeader("Content-Transfer-Encoding", "binary");
-            Response.AppendHeader("Content-Length", outputStream.Length.ToString());
-            Response.BinaryWrite(outputStream.ToArray());
-            Response.Flush();
-            Response.End();
-        }
-    }
-
-    public class Dimensions
-    {
-        public int RenderWidth { get; set; }
-        public int RenderHeight { get; set; }
-        public int PageWidth { get; set; }
-        public int PageHeight { get; set; }
-
-        public float MarginLeft { get; set; }
-        public float MarginTop { get; set; }
-        public float MarginRight { get; set; }
-        public float MarginBottom { get; set; }
-
-        public int Zoom { get; set; }
     }
 }

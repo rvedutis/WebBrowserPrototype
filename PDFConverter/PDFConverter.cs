@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ASPPDFLib;
 
@@ -27,29 +28,37 @@ namespace PDFConverter
 
             foreach (var pdf in pdfs)
             {
-                var doc = manager.OpenDocumentBinary(pdf.Bytes);
-
-                for (var index = 0; index < doc.Pages.Count; index++)
+                try
                 {
-                    var graphics = combinedDoc.CreateGraphicsFromPage(doc, index + 1);
-                    var newPage = combinedDoc.Pages.Add(doc.Pages[index + 1].Width, doc.Pages[index + 1].Height);
+                    var doc = manager.OpenDocumentBinary(pdf.Bytes);
 
-                    var imageScale = BuildParam(
-                        manager,
-                        new Dictionary<string, object>
-                        {
-                            {"x", 0},
-                            {"y", 0},
-                            {"ScaleX", 1},
-                            {"ScaleY", 1}
-                        }
-                        );
+                    for (var index = 0; index < doc.Pages.Count; index++)
+                    {
+                        var graphics = combinedDoc.CreateGraphicsFromPage(doc, index + 1);
+                        var newPage = combinedDoc.Pages.Add(doc.Pages[index + 1].Width, doc.Pages[index + 1].Height);
 
-                    newPage.Canvas.DrawGraphics(graphics, imageScale);
-                    ReleaseComObjects(new object[] { imageScale, newPage, graphics });
+                        var imageScale = BuildParam(
+                            manager,
+                            new Dictionary<string, object>
+                            {
+                                {"x", 0},
+                                {"y", 0},
+                                {"ScaleX", 1},
+                                {"ScaleY", 1}
+                            }
+                            );
+
+                        newPage.Canvas.DrawGraphics(graphics, imageScale);
+                        ReleaseComObjects(new object[] {imageScale, newPage, graphics});
+                    }
+
+                    ReleaseComObjects(new object[] {doc});
+                }
+                catch (Exception e)
+                {
+
                 }
 
-                ReleaseComObjects(new object[] { doc });
             }
 
             var docBytes = combinedDoc.SaveToMemory();
@@ -83,26 +92,32 @@ namespace PDFConverter
                 }
                 );
 
-            var image = doc.OpenUrl(pdf.Markup, browserOptions);
+            try
+            {
+                var image = doc.OpenUrl(pdf.Markup, browserOptions);
 
-            var imageScale = BuildParam(
-                manager,
-                new Dictionary<string, object>
-                {
+                var imageScale = BuildParam(
+                    manager,
+                    new Dictionary<string, object>
+                    {
                     {"x", dimensions.MarginLeft*PixelToPdf},
                     {"y", page.Height - dimensions.MarginTop*PixelToPdf - image.Height*(page.Width/image.Width)},
                     {"ScaleX", page.Width/image.Width},
                     {"ScaleY", page.Width/image.Width}
-                }
-                );
+                    }
+                    );
 
-            page.Canvas.DrawImage(image, imageScale);
+                page.Canvas.DrawImage(image, imageScale);
 
-            var docBytes = doc.SaveToMemory();
+                var docBytes = doc.SaveToMemory();
 
-            ReleaseComObjects(new object[] { imageScale, image, browserOptions, page, doc, manager });
+                ReleaseComObjects(new object[] { imageScale, image, browserOptions, page, doc, manager });
 
-            pdf.Bytes = docBytes;
+                pdf.Bytes = docBytes;
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         private static PdfManager GetPdfManager()
