@@ -39,7 +39,6 @@ namespace PDFConverter.Web
             {
                 StartInfo =
                 {
-                    WorkingDirectory = @"C:\src\PDFConverter\WorkingSample\bin\Debug\",
                     FileName = @"C:\src\PDFConverter\WorkingSample\bin\Debug\WorkingSample.exe",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -67,7 +66,7 @@ namespace PDFConverter.Web
             }
             else
             {
-                Response.Write("Error");
+                Response.Write($"Error {exitCode}");
                 Response.Flush();
                 Response.End();
             }
