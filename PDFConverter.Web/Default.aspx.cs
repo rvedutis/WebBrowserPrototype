@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web.UI;
 using PDFConverter.Common;
 
@@ -52,8 +53,34 @@ namespace PDFConverter.Web
 
             var exitCode = process.ExitCode;
 
-            Debugger.Break();
+            if (exitCode == 0)
+            {
+                var stream = new MemoryStream(File.ReadAllBytes(@"C:\src\PDFConverter\c3e3194b-af15-438a-afee-83ca6e2ce29e.pdf"));
+                SendPdfToClient(stream);
+
+            }
+            else
+            {
+                Response.Write("Error");
+                Response.Flush();
+                Response.End();
+            }
 
         }
+
+        private void SendPdfToClient(MemoryStream outputStream)
+        {
+            Response.Buffer = true;
+            Response.ClearHeaders();
+            Response.ClearContent();
+            Response.ContentType = "application/pdf";
+            Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
+            Response.AppendHeader("Content-Transfer-Encoding", "binary");
+            Response.AppendHeader("Content-Length", outputStream.Length.ToString());
+            Response.BinaryWrite(outputStream.ToArray());
+            Response.Flush();
+            Response.End();
+        }
+
     }
 }
