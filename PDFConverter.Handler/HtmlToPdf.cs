@@ -107,7 +107,7 @@ namespace PDFConverter.Handler
 
             // TO DO: config switch
             pNova.SetOptionLong(NovaOptions.NOVAPDF_SAVE_FOLDER_TYPE, (int)SaveFolder.SAVEFOLDER_CUSTOM);
-            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FOLDER, @"C:\WebBrowserPrototype\PDFConverter.Processor\bin\Debug\out\");
+            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FOLDER, @"C:\src\PDFConverter\PDFConverter.Processor\bin\Debug\out\");
 
             pNova.SetOptionLong(NovaOptions.NOVAPDF_SAVE_FILEEXIST_ACTION, (int)SaveFileConflictType.FILE_CONFLICT_STRATEGY_OVERWRITE);
             pNova.SetOptionBool(NovaOptions.NOVAPDF_INFO_VIEWER_ENABLE, 0);

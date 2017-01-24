@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Web.UI;
-using System.Xml;
 using PDFConverter.Common;
 
 namespace PDFConverter.Web
@@ -18,72 +20,40 @@ namespace PDFConverter.Web
 
             var dimensions = new Dimensions
             {
-                RenderWidth = int.Parse(Request.Form["RenderWidth"]),
-                RenderHeight = int.Parse(Request.Form["RenderHeight"]),
                 PageWidth = int.Parse(Request.Form["PageWidth"]),
                 PageHeight = int.Parse(Request.Form["PageHeight"]),
                 MarginLeft = Convert.ToSingle(Request.Form["MarginLeft"]),
                 MarginTop = Convert.ToSingle(Request.Form["MarginTop"]),
                 MarginRight = Convert.ToSingle(Request.Form["MarginRight"]),
-                MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"]),
-                Zoom = int.Parse(Request.Form["Zoom"])
+                MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"])
             };
 
-            var pages = content.Split(new[] { "#####NEWPAGE#####" }, StringSplitOptions.None);
+            var fileId = Guid.NewGuid();
+            fileId = Guid.Parse("c3e3194b-af15-438a-afee-83ca6e2ce29e");
 
-            foreach (var page in pages)
+            File.WriteAllText($@"C:\src\PDFConverter\{fileId}.html", content);
+
+            var process = new Process
             {
-                var fileName = Guid.NewGuid();
-                var xmlDoc = new XmlDocument();
-                var root = xmlDoc.CreateElement("page");
-                var pageDimensions = xmlDoc.CreateElement("dimensions");
-                var pageMarkup = xmlDoc.CreateElement("markup");
+                StartInfo =
+                {
+                    WorkingDirectory = @"C:\src\PDFConverter\WorkingSample\bin\Debug\",
+                    FileName = @"C:\src\PDFConverter\WorkingSample\bin\Debug\WorkingSample.exe",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = false
+                }
+            };
 
-                pageMarkup.InnerText = page;
+            process.Start();
 
-                var renderWidth = xmlDoc.CreateElement("renderWidth");
-                renderWidth.InnerText = dimensions.RenderWidth.ToString();
-                pageDimensions.AppendChild(renderWidth);
+            process.WaitForExit();
 
-                var renderHeight = xmlDoc.CreateElement("renderHeight");
-                renderHeight.InnerText = dimensions.RenderHeight.ToString();
-                pageDimensions.AppendChild(renderHeight);
+            var exitCode = process.ExitCode;
 
-                var pageWidth = xmlDoc.CreateElement("pageWidth");
-                pageWidth.InnerText = dimensions.PageWidth.ToString();
-                pageDimensions.AppendChild(pageWidth);
+            Debugger.Break();
 
-                var pageHeight = xmlDoc.CreateElement("pageHeight");
-                pageHeight.InnerText = dimensions.PageHeight.ToString();
-                pageDimensions.AppendChild(pageHeight);
-
-                var marginLeft = xmlDoc.CreateElement("marginLeft");
-                marginLeft.InnerText = dimensions.MarginLeft.ToString();
-                pageDimensions.AppendChild(marginLeft);
-
-                var marginTop = xmlDoc.CreateElement("marginTop");
-                marginTop.InnerText = dimensions.MarginTop.ToString();
-                pageDimensions.AppendChild(marginTop);
-
-                var marginRight = xmlDoc.CreateElement("marginRight");
-                marginRight.InnerText = dimensions.MarginRight.ToString();
-                pageDimensions.AppendChild(marginRight);
-
-                var marginBottom = xmlDoc.CreateElement("marginBottom");
-                marginBottom.InnerText = dimensions.MarginBottom.ToString();
-                pageDimensions.AppendChild(marginBottom);
-
-                var zoom = xmlDoc.CreateElement("zoom");
-                zoom.InnerText = dimensions.Zoom.ToString();
-                pageDimensions.AppendChild(zoom);
-
-                root.AppendChild(pageMarkup);
-                root.AppendChild(pageDimensions);
-                xmlDoc.AppendChild(root);
-
-                // TO DO: config switch
-                xmlDoc.Save(@"C:\WebBrowserPrototype\PDFConverter.Processor\bin\Debug\in\" + fileName.ToString() + ".xml");
-            }
         }
     }
 }
