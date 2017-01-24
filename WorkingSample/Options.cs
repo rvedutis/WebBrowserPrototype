@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSWebBrowserPrint
+namespace WorkingSample
 {
     public class Options
     {

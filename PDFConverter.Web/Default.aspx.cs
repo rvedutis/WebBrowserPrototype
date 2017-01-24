@@ -58,6 +58,10 @@ namespace PDFConverter.Web
             if (exitCode == 0)
             {
                 var stream = new MemoryStream(File.ReadAllBytes($@"{_filePath}{_fileId}.pdf"));
+
+                //TODO: Save to SQL / AWS / Glacier First?
+                File.Delete($@"{_filePath}{_fileId}.pdf");
+
                 SendPdfToClient(stream);
 
             }

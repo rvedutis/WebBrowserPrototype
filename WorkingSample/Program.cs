@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using ConsoleApplication9;
 using novapiLib80;
 using SHDocVw;
-using WorkingSample;
 using WebBrowser = System.Windows.Forms.WebBrowser;
 
-namespace CSWebBrowserPrint
+namespace WorkingSample
 {
     public class Program
     {
@@ -88,8 +84,6 @@ namespace CSWebBrowserPrint
                 pNova.SetDefaultPrinter();
 
                 // Now perform the printing.
-                //wb.Print();
-
                 var ie = (InternetExplorer)wb.ActiveXInstance;
 
                 ie.ExecWB(OLECMDID.OLECMDID_PRINT, OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER);
