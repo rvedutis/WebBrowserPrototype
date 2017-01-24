@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PDFConverter.Processor</RootNamespace>
     <AssemblyName>PDFConverter.Processor</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,6 +72,16 @@
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDFConverter.Common\PDFConverter.Common.csproj">
+      <Project>{df2a648d-b53b-4b79-b613-b25e0ab89845}</Project>
+      <Name>PDFConverter.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDFConverter.Handler\PDFConverter.Handler.csproj">
+      <Project>{d1fed27a-fde0-4710-87b0-7fdd27b2b6d0}</Project>
+      <Name>PDFConverter.Handler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

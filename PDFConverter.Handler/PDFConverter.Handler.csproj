@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F1A962A2-3CA8-4183-975C-2C6C6D76F738}</ProjectGuid>
+    <ProjectGuid>{D1FED27A-FDE0-4710-87B0-7FDD27B2B6D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PDFConverter</RootNamespace>
-    <AssemblyName>PDFConverter</AssemblyName>
+    <RootNamespace>PDFConverter.Handler</RootNamespace>
+    <AssemblyName>PDFConverter.Handler</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,14 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Interop.SHDocVw">
-      <HintPath>..\PDFConverter.Web\obj\Debug\Interop.SHDocVw.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,24 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pdf.cs" />
-    <Compile Include="PDFConverter.cs" />
-    <Compile Include="Dimensions.cs" />
+    <Compile Include="HtmlToPdf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\PDFConverter.Common\PDFConverter.Common.csproj">
+      <Project>{df2a648d-b53b-4b79-b613-b25e0ab89845}</Project>
+      <Name>PDFConverter.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="ASPPDFLib">
-      <Guid>{414FEE4B-2879-4090-957E-423567FFCFC6}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="novapiLib80">
       <Guid>{9B7C4847-8D28-43CC-ADD2-A6495EB93175}</Guid>
       <VersionMajor>8</VersionMajor>

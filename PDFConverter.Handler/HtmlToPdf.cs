@@ -1,14 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using novapiLib80;
-using SHDocVw;
-using WebBrowser = System.Windows.Forms.WebBrowser;
+using PDFConverter.Common;
 
-namespace ConsoleConverter
+namespace PDFConverter.Handler
 {
-    public class Program
+    public static class HtmlToPdf
     {
         public static string PRINTER_NAME = "novaPDF SDK 8";
         public static string NOVAPDF_INFO_SUBJECT = "Document Subject";
@@ -58,22 +56,16 @@ namespace ConsoleConverter
             public static long NV_NO_ACTIVE_PROFILE = 0xD5DA0028;
         }
 
-        public static void Main(string[] args)
+        public static void Convert(string markup, string fileName, Dimensions dimensions)
         {
             var thread = new Thread(delegate ()
             {
                 using (var browser = new WebBrowser())
                 {
-                    browser.ScrollBarsEnabled = false;
-                    browser.AllowNavigation = false;
-                    browser.ScriptErrorsSuppressed = false;
-
-                    browser.DocumentText = "<html><head></head><body>Hi There</body></html>";
-
-                    browser.Width = 816;
-                    browser.Height = 1056;
-
-                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e);
+                    browser.DocumentText = markup;
+                    browser.Width = dimensions.RenderWidth * dimensions.Zoom;
+                    browser.Height = dimensions.RenderHeight * dimensions.Zoom;
+                    browser.DocumentCompleted += (sender, e) => RenderCompleted(sender, e, fileName, dimensions);
 
                     while (browser.ReadyState != WebBrowserReadyState.Complete)
                     {
@@ -86,19 +78,16 @@ namespace ConsoleConverter
             thread.SetApartmentState(ApartmentState.STA);
             thread.Name = "WebBrowserPrint";
             thread.Start();
+            thread.Join();
         }
 
-        private static void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs webBrowserDocumentCompletedEventArgs)
+        private static void RenderCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, string fileName, Dimensions dimensions)
         {
             var browser = sender as WebBrowser;
             if (browser == null)
             {
                 return;
             }
-
-            var ie = (InternetExplorer) browser.ActiveXInstance;
-
-            var documentId = Guid.NewGuid();
 
             // create the NovaPdfOptions object
             NovaPdfOptions80 pNova = new NovaPdfOptions80();
@@ -114,10 +103,11 @@ namespace ConsoleConverter
 
             // and set some	options
             pNova.SetOptionString2(NovaOptions.NOVAPDF_DOCINFO_SUBJECT, "ASP.NET Hello document");
-            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FILE_NAME, $"{documentId}");
+            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FILE_NAME, $"{fileName}");
 
+            // TO DO: config switch
             pNova.SetOptionLong(NovaOptions.NOVAPDF_SAVE_FOLDER_TYPE, (int)SaveFolder.SAVEFOLDER_CUSTOM);
-            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FOLDER, @"c:\users\bob\desktop");
+            pNova.SetOptionString(NovaOptions.NOVAPDF_SAVE_FOLDER, @"C:\WebBrowserPrototype\PDFConverter.Processor\bin\Debug\out\");
 
             pNova.SetOptionLong(NovaOptions.NOVAPDF_SAVE_FILEEXIST_ACTION, (int)SaveFileConflictType.FILE_CONFLICT_STRATEGY_OVERWRITE);
             pNova.SetOptionBool(NovaOptions.NOVAPDF_INFO_VIEWER_ENABLE, 0);
@@ -130,10 +120,7 @@ namespace ConsoleConverter
             pNova.SetActiveProfile(activeProfile);
             pNova.SetDefaultPrinter();
 
-            ie.ExecWB(OLECMDID.OLECMDID_PRINT, OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 0);
-            //browser.Print();
-            
-            File.Create($@"c:\Users\bob\Desktop\Done.txt");
+            browser.Print();
         }
     }
 }

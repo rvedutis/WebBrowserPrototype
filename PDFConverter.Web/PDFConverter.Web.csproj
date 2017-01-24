@@ -47,10 +47,6 @@
       <HintPath>..\packages\Common.Logging.2.1.1\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Interop.novapiLib80">
-      <HintPath>..\PDFConverter\obj\Debug\Interop.novapiLib80.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -63,7 +59,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -165,7 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
-    <Content Include="Default_old.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="packages.config" />
@@ -186,13 +180,6 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Default_old.aspx.cs">
-      <DependentUpon>Default_old.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default_old.aspx.designer.cs">
-      <DependentUpon>Default_old.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -203,20 +190,9 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="SHDocVw">
-      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>1</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PDFConverter\PDFConverter.csproj">
-      <Project>{f1a962a2-3ca8-4183-975c-2c6c6d76f738}</Project>
-      <Name>PDFConverter</Name>
+    <ProjectReference Include="..\PDFConverter.Common\PDFConverter.Common.csproj">
+      <Project>{df2a648d-b53b-4b79-b613-b25e0ab89845}</Project>
+      <Name>PDFConverter.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
