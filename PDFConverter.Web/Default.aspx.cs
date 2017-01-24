@@ -11,6 +11,7 @@ namespace PDFConverter.Web
     public partial class _Default : Page
     {
         private Guid _fileId = Guid.NewGuid();
+        private string _filePath = @"C:\src\PDFConverter\";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -32,7 +33,7 @@ namespace PDFConverter.Web
             };
 
 
-            File.WriteAllText($@"C:\src\PDFConverter\{_fileId}.html", content);
+            File.WriteAllText($@"{_filePath}{_fileId}.html", content);
 
             var process = new Process
             {
@@ -44,7 +45,7 @@ namespace PDFConverter.Web
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = false,
-                    Arguments = $"--fileName {_fileId}"
+                    Arguments = $"--fileName {_fileId} --filePath {_filePath}"
                 }
             };
 
@@ -56,7 +57,7 @@ namespace PDFConverter.Web
 
             if (exitCode == 0)
             {
-                var stream = new MemoryStream(File.ReadAllBytes($@"C:\src\PDFConverter\{_fileId}.pdf"));
+                var stream = new MemoryStream(File.ReadAllBytes($@"{_filePath}{_fileId}.pdf"));
                 SendPdfToClient(stream);
 
             }

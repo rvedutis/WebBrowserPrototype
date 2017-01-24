@@ -36,7 +36,7 @@ namespace CSWebBrowserPrint
 
                 //wb.Navigate($@"{_root}\input.html");
 
-                wb.Navigate($@"C:\src\PDFConverter\{fileId}.html");
+                wb.Navigate($@"{_options.FilePath}{fileId}.html");
 
                 Application.Run();
             });
@@ -50,7 +50,7 @@ namespace CSWebBrowserPrint
         {
             try
             {
-                File.Delete($@"C:\src\PDFConverter\{_options.FileName}.html");
+                File.Delete($@"{_options.FilePath}{_options.FileName}.html");
 
                 var wb = sender as WebBrowser;
 
@@ -137,7 +137,7 @@ namespace CSWebBrowserPrint
 
         private static void IE_OnPrintTemplateTeardown(object pdisp, WebBrowser wb)
         {
-            var fileInfo = new FileInfo($@"C:\src\PDFConverter\{_options.FileName}.pdf");
+            var fileInfo = new FileInfo($@"{_options.FilePath}{_options.FileName}.pdf");
 
             while (!IsFileWrittenTo(fileInfo))
             {
