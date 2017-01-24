@@ -10,6 +10,8 @@ namespace PDFConverter.Web
 {
     public partial class _Default : Page
     {
+        private Guid _fileId = Guid.NewGuid();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             var content = Server.UrlDecode(Request.Form["RenderedContent"]);
@@ -29,10 +31,8 @@ namespace PDFConverter.Web
                 MarginBottom = Convert.ToSingle(Request.Form["MarginBottom"])
             };
 
-            var fileId = Guid.NewGuid();
-            fileId = Guid.Parse("c3e3194b-af15-438a-afee-83ca6e2ce29e");
 
-            File.WriteAllText($@"C:\src\PDFConverter\{fileId}.html", content);
+            File.WriteAllText($@"C:\src\PDFConverter\{_fileId}.html", content);
 
             var process = new Process
             {
@@ -43,7 +43,8 @@ namespace PDFConverter.Web
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = false
+                    CreateNoWindow = false,
+                    Arguments = $"--fileName {_fileId}"
                 }
             };
 
@@ -55,7 +56,7 @@ namespace PDFConverter.Web
 
             if (exitCode == 0)
             {
-                var stream = new MemoryStream(File.ReadAllBytes(@"C:\src\PDFConverter\c3e3194b-af15-438a-afee-83ca6e2ce29e.pdf"));
+                var stream = new MemoryStream(File.ReadAllBytes($@"C:\src\PDFConverter\{_fileId}.pdf"));
                 SendPdfToClient(stream);
 
             }
@@ -65,7 +66,6 @@ namespace PDFConverter.Web
                 Response.Flush();
                 Response.End();
             }
-
         }
 
         private void SendPdfToClient(MemoryStream outputStream)
@@ -74,7 +74,7 @@ namespace PDFConverter.Web
             Response.ClearHeaders();
             Response.ClearContent();
             Response.ContentType = "application/pdf";
-            Response.AppendHeader("Content-Disposition", "inline; filename=Report.pdf");
+            Response.AppendHeader("Content-Disposition", "inline; filename=Your Report.pdf");
             Response.AppendHeader("Content-Transfer-Encoding", "binary");
             Response.AppendHeader("Content-Length", outputStream.Length.ToString());
             Response.BinaryWrite(outputStream.ToArray());
