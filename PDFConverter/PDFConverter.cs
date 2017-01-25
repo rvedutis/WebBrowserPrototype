@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows.Forms;
 using novapiLib80;
 using PDFConverter.Common;
-using WebBrowser = System.Windows.Forms.WebBrowser;
 
 namespace PDFConverter
 {
@@ -26,7 +23,8 @@ namespace PDFConverter
             th.Start();
         }
 
-        private static void WB_OnDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e, PrintRequest printRequest)
+        private static void WB_OnDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e,
+            PrintRequest printRequest)
         {
             var wb = sender as WebBrowser;
 
@@ -47,14 +45,14 @@ namespace PDFConverter
             pNova.SetOptionString(NovaHelpers.NovaOptions.NOVAPDF_SAVE_FILE_NAME, printRequest.FileName.ToString());
 
             pNova.SetOptionLong(NovaHelpers.NovaOptions.NOVAPDF_SAVE_FOLDER_TYPE,
-                (int)NovaHelpers.SaveFolder.SAVEFOLDER_CUSTOM);
+                (int) NovaHelpers.SaveFolder.SAVEFOLDER_CUSTOM);
             pNova.SetOptionString(NovaHelpers.NovaOptions.NOVAPDF_SAVE_FOLDER, $@"{printRequest.FilePath}");
 
             pNova.SetOptionLong(NovaHelpers.NovaOptions.NOVAPDF_SAVE_FILEEXIST_ACTION,
-                (int)NovaHelpers.SaveFileConflictType.FILE_CONFLICT_STRATEGY_OVERWRITE);
+                (int) NovaHelpers.SaveFileConflictType.FILE_CONFLICT_STRATEGY_OVERWRITE);
             pNova.SetOptionBool(NovaHelpers.NovaOptions.NOVAPDF_INFO_VIEWER_ENABLE, 0);
             pNova.SetOptionLong(NovaHelpers.NovaOptions.NOVAPDF_SAVE_PROMPT_TYPE,
-                (int)NovaHelpers.SaveDlgType.PROMPT_SAVE_NONE);
+                (int) NovaHelpers.SaveDlgType.PROMPT_SAVE_NONE);
 
             //save the new added profile
             pNova.SaveProfile();
