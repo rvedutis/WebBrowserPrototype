@@ -1,4 +1,4 @@
-﻿namespace WorkingSample
+﻿namespace PDFConverter
 {
     public static class NovaHelpers
     {

@@ -194,6 +194,10 @@
       <Project>{df2a648d-b53b-4b79-b613-b25e0ab89845}</Project>
       <Name>PDFConverter.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PDFConverter\PDFConverter.csproj">
+      <Project>{50ecb623-e667-40ce-b50d-1bcbf157c77a}</Project>
+      <Name>PDFConverter</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
